@@ -1,6 +1,6 @@
 
 #include <unordered_map>
-#include "topics.h"
+#include "topics.hpp"
 
 namespace rtu {
   namespace topics {
