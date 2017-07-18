@@ -1,0 +1,17 @@
+
+cmake_minimum_required( VERSION 3.6 FATAL_ERROR )
+set( CMAKE_DISABLE_IN_SOURCE_BUILD ON )
+set( CMAKE_DISABLE_SOURCE_CHANGES ON )
+
+project( realtimeutils VERSION 0.01.01.01 LANGUAGES CXX C )
+
+add_library( realtimeutils STATIC
+  topics.cpp
+  )
+target_link_libraries( realtimeutils
+  )
+target_include_directories( realtimeutils PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  )
+set_property( TARGET realtimeutils PROPERTY CXX_STANDARD 11 )
+set_property( TARGET realtimeutils PROPERTY CXX_STANDARD_REQUIRED ON )

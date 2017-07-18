@@ -1,0 +1,53 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# VIM files
+*.swp
+*.swo
+
+# Build directories
+/build*
+/build-html
+/install
+/install-html
+/buildNative
+
+# CLion IDE files
+/.idea
+/cmake-build*
+
+# Visual Studio files
+/build-msvs
+/.vs
+CMakeSettings.json
+/Win32
+
+# sketchup backup files
+*.skb
