@@ -25,7 +25,7 @@ namespace rtu {
       activeTopics[topic].subscriptions.erase(id);
     }
 
-    std::atomic<uint32_t> Subscription::nextId = 0;
+    std::atomic<uint32_t> Subscription::nextId(0);
 
     void publish(std::string topic, void* data) {
       activeTopics[topic].publish(data);
