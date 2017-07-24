@@ -10,7 +10,7 @@ namespace rtu {
     typedef Delegate<void(void*)> Action;
     class Subscription {
       public:
-        Subscription(const std::string && topic, const Action && action);
+        Subscription(std::string topic, Action action);
         virtual ~Subscription();
       private:
         std::string topic;
