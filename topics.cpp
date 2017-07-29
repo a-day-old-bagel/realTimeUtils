@@ -18,21 +18,16 @@ namespace rtu {
     }
 
     Subscription::Subscription(std::string topic, Action action) : topic(topic), id(++nextId) {
-      printf("SUBSCRIPTION CREATED FOR TOPIC: %s\n", topic.c_str());
       activeTopics[topic].subscriptions[id] = action;
     }
 
     Subscription::~Subscription() {
-      printf("SUBSCRIPTION CANCELLED FOR TOPIC: %s\n", topic.c_str());
       activeTopics[topic].subscriptions.erase(id);
     }
 
     std::atomic<uint32_t> Subscription::nextId(0);
 
     void publish(std::string topic, void* data) {
-      if (topic.compare("key_held_space") == 0) {
-        printf("SPACE topic: %u subscibers.\n", activeTopics.count(topic));
-      }
       activeTopics[topic].publish(data);
     }
 
