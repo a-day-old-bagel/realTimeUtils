@@ -6,7 +6,8 @@ set( CMAKE_DISABLE_SOURCE_CHANGES ON )
 project( realtimeutils VERSION 0.01.01.01 LANGUAGES CXX C )
 
 add_library( realtimeutils STATIC
-  topics.cpp
+  keyInput.hpp
+  topics.cpp topics.hpp
   )
 target_link_libraries( realtimeutils
   )
