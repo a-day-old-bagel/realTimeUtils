@@ -11,6 +11,10 @@ namespace rtu {
     class Subscription {
       public:
         Subscription(std::string topic, Action action);
+        Subscription(const Subscription&) = delete; // no copies
+        Subscription& operator=(const Subscription&) = delete; // no self-assignments
+        Subscription(Subscription&&) = delete; // no moves
+        Subscription& operator=(Subscription&&) = delete; // no move assignments
         virtual ~Subscription();
       private:
         std::string topic;

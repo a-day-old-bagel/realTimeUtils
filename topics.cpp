@@ -19,10 +19,12 @@ namespace rtu {
 
     Subscription::Subscription(std::string topic, Action action) : topic(topic), id(++nextId) {
       activeTopics[topic].subscriptions[id] = action;
+      printf("SUB: %s %u\n", topic.c_str(), id);
     }
 
     Subscription::~Subscription() {
       activeTopics[topic].subscriptions.erase(id);
+      printf("~SUB: %s %u\n", topic.c_str(), id);
     }
 
     std::atomic<uint32_t> Subscription::nextId(0);
