@@ -1,7 +1,8 @@
 /**
- * A Delegate in this case is a container for a stateful call to a member method or static function.
- * The goal is to be able to quickly and simply store a call to the method of any object or a call to a function
- * with state without worrying about how state is captured and whatnot.
+ * A Delegate in this case is a container for a stateful call to a function or member method. A delegate can be stored
+ * or passed around and called from anywhere without losing context or causing other headaches (most of the time).
+ *
+ * "Why not just use std::function?" No real reason. This is simple and fast and I'm used to it.
  */
 #pragma once
 
@@ -11,9 +12,6 @@ namespace rtu {
     * funciton signature: <return_type(param_type_0, param_type_1, ... , param_type_n)>
     * For example, for a function that returns float and takes an int and a char, a delegate type would be:
     * Delegate<float(int, char)>
-    *
-    * If you wonder why I don't just use std::function, one reason is because I've been using this since before
-    * c++11 and I'm used to it. There doesn't seem to be a good motivation to change atm.
     */
 
    /*
@@ -32,12 +30,12 @@ namespace rtu {
     *   Delegate<void(const char*)> delegate = RTU_FUNC_DLGT(function);
     *   delegate("a string");
     */
-  #ifndef RTU_MTHD_DLGT
-    #define RTU_MTHD_DLGT(func, instRef) (rtu::NewDelegate(func).Create<func>(instRef)) // deletage to member method
-  #endif
-  #ifndef RTU_FUNC_DLGT
-    #define RTU_FUNC_DLGT(func) (rtu::NewDelegate_NoClass(func).CreateForFunction<func>()) // delegate to function
-  #endif
+# ifndef RTU_MTHD_DLGT // deletage to member method (template keyword fixes problems with methods of template classes)
+#   define RTU_MTHD_DLGT(func, instRef) (rtu::NewDelegate(func).template Create<func>(instRef))
+# endif
+# ifndef RTU_FUNC_DLGT // delegate to function
+#   define RTU_FUNC_DLGT(func) (rtu::NewDelegate_NoClass(func).CreateForFunction<func>())
+# endif
 
   // And here are come all the guts...
   template<typename returnType, typename... params>
