@@ -8,6 +8,7 @@ set( CMAKE_CXX_STANDARD 17 )
 set( CMAKE_CXX_STANDARD_REQUIRED ON )
 
 add_library( realtimeutils STATIC
+  eventResponseMap.cpp eventResponseMap.hpp
   keyInput.hpp
   topics.cpp topics.hpp
   )
