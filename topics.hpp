@@ -9,6 +9,16 @@
 #define RTU_MAKE_SUB_UNIQUEPTR(tpc, fnc, inst) std::make_unique<Subscription>(tpc, RTU_MTHD_DLGT(&fnc, inst));
 
 namespace rtu {
+  /**
+   * Topics, publishers, and subscriptions should really only be used as a last resort in most applications since they
+   * obscure the control flow of your program and can easily be misused out of laziness. Only choose to implement
+   * your behavior this way if there is no obviously clean way to communicate between two parts of your code. In other
+   * words, generally use this if your low coupling philosophy would be seriously offended otherwise.
+   * Some will argue that needing a technique like this is a symptom of bad design, and they may be right.
+   * But perfect design never makes it to production, and they may be wrong besides. Maybe a completely decoupled
+   * event-based/message-passing design approaches a sort of perfection in its simplicity and extensibility.
+   * So maybe disregard this whole message.
+   */
   namespace topics {
 
     void publishPtr(const std::string &topic, void *data);
