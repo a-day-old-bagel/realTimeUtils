@@ -6,7 +6,13 @@
 #include "delegate.hpp"
 
 // Get a std::unique_ptr to a subscription without all the syntax
-#define RTU_MAKE_SUB_UNIQUEPTR(tpc, fnc, inst) std::make_unique<Subscription>(tpc, RTU_MTHD_DLGT(&fnc, inst));
+#define RTU_MAKE_SUB_UNIQUEPTR(tpc, fnc, inst) std::make_unique<rtu::topics::Subscription>( \
+tpc, RTU_MTHD_DLGT(&fnc, inst));
+
+// Create a static subscription inside a function so that no further state creation is needed.
+// This can function as a "one-liner" topic subscription. Be careful, as all the caveats of a static variable apply.
+#define RTU_STATIC_SUB(name, tpc, fnc, inst) static std::unique_ptr<rtu::topics::Subscription> name; \
+if ( ! name) { name = RTU_MAKE_SUB_UNIQUEPTR(tpc, fnc, inst); }
 
 namespace rtu {
   /**
