@@ -10,6 +10,7 @@ set( CMAKE_CXX_STANDARD_REQUIRED ON )
 add_library( realtimeutils STATIC
   eventResponseMap.cpp eventResponseMap.hpp
   keyInput.hpp
+  ouroboros.hpp
   topics.cpp topics.hpp
   )
 target_link_libraries( realtimeutils
