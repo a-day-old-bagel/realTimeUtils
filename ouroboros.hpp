@@ -22,12 +22,17 @@ namespace rtu {
       const bool isFull() const;
       const bool isValid() const;
       const bool isValid(indexType index) const;
+      const bool firstIsFresherThanSecond(indexType first, indexType second) const;
+      const bool setEmptyIndex(indexType index);
       T & capitate();
       void decaudate();
       void decaudate(indexType upToButNot);
       T & operator [] (indexType index);
       const T & operator [] (indexType index) const;
       const std::string toDebugString() const;
+
+      static indexType getNext(indexType index);
+      static indexType getPrev(indexType index);
 
     private:
 
@@ -98,14 +103,27 @@ namespace rtu {
 
   template<typename T, typename indexType, indexType numSlots>
   const bool Ouroboros<T, indexType, numSlots>::isValid(indexType index) const {
-    if (errorFlag) { return false; }
-    bool isInRange;
-    if (nextHead > currentTail) {
-      isInRange = nextHead > index && currentTail <= index;
+    return ! errorFlag && ! isEmpty() && firstIsFresherThanSecond(index, currentTail);
+  }
+
+  template<typename T, typename indexType, indexType numSlots>
+  const bool Ouroboros<T, indexType, numSlots>::firstIsFresherThanSecond(indexType first, indexType second) const {
+    if (nextHead > second) {
+      return nextHead > first && second <= first;
     } else {
-      isInRange = nextHead > index || currentTail <= index;
+      return nextHead > first || second <= first;
     }
-    return isInRange && !isEmpty();
+  }
+
+  template<typename T, typename indexType, indexType numSlots>
+  const bool Ouroboros<T, indexType, numSlots>::setEmptyIndex(indexType index) {
+    if (isEmpty()) {
+      nextHead = index;
+      currentTail = index;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   template<typename T, typename indexType, indexType numSlots>
@@ -140,9 +158,34 @@ namespace rtu {
   const std::string Ouroboros<T, indexType, numSlots>::toDebugString() const {
     std::stringstream out;
     for (indexType i = 0; i < numSlots; ++i) {
-      out << isValid(i);
+      int numeral = isValid(i);
+      if (nextHead == i) {
+        numeral += 3;
+      }
+      if (currentTail == i) {
+        numeral += 5;
+      }
+      out << numeral;
     }
     return out.str();
+  }
+
+  template<typename T, typename indexType, indexType numSlots>
+  indexType Ouroboros<T, indexType, numSlots>::getNext(indexType index) {
+    if (index < 0 || ++index >= numSlots) {
+      return 0;
+    } else {
+      return index; // already incremented
+    }
+  }
+
+  template<typename T, typename indexType, indexType numSlots>
+  indexType Ouroboros<T, indexType, numSlots>::getPrev(indexType index) {
+    if (index <= 0 || --index >= numSlots) {
+      return numSlots - 1;
+    } else {
+      return index; // already decremented
+    }
   }
 
   template<typename T, typename indexType, indexType numSlots>
@@ -151,7 +194,7 @@ namespace rtu {
       if (fullFlag) { haveBadTime(); }
       else { emptyFlag = false; }
     }
-    if (++nextHead == numSlots) { nextHead = 0; }
+    nextHead = getNext(nextHead);
     if (nextHead == currentTail) { fullFlag = true; }
     return nextHead;
   }
@@ -162,7 +205,7 @@ namespace rtu {
       if (emptyFlag) { haveBadTime(); }
       else { fullFlag = false; }
     }
-    if (++currentTail == numSlots) { currentTail = 0; }
+    currentTail = getNext(currentTail);
     if (nextHead == currentTail) { emptyFlag = true; }
     return currentTail;
   }
