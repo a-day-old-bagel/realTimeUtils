@@ -34,7 +34,7 @@ namespace rtu {
 #   define RTU_MTHD_DLGT(func, instRef) (rtu::NewDelegate(func).template Create<func>(instRef))
 # endif
 # ifndef RTU_FUNC_DLGT // delegate to function
-#   define RTU_FUNC_DLGT(func) (rtu::NewDelegate_NoClass(func).CreateForFunction<func>())
+#   define RTU_FUNC_DLGT(func) (rtu::NewDelegate_NoClass(func).template CreateForFunction<func>())
 # endif
 
   // And here are come all the guts...
