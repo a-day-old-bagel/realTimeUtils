@@ -18,6 +18,7 @@ namespace rtu {
       const indexType getNumSlots() const;
       const indexType getHeadSlot() const;
       const indexType getTailSlot() const;
+      const indexType getBehindTailSlot() const;
       const bool isEmpty() const;
       const bool isFull() const;
       const bool isValid() const;
@@ -49,6 +50,7 @@ namespace rtu {
       static void defaultDtorImpl(T&, const indexType&);
       indexType advanceHead();
       indexType advanceTail();
+      const indexType getPrevUnsigned(indexType index) const;
       void haveBadTime();
   };
 
@@ -78,12 +80,17 @@ namespace rtu {
 
   template<typename T, typename indexType, indexType numSlots>
   const indexType Ouroboros<T, indexType, numSlots>::getHeadSlot() const {
-    return nextHead ? nextHead - 1 : numSlots - 1;
+    return getPrevUnsigned(nextHead);
   }
 
   template<typename T, typename indexType, indexType numSlots>
   const indexType Ouroboros<T, indexType, numSlots>::getTailSlot() const {
     return currentTail;
+  }
+
+  template<typename T, typename indexType, indexType numSlots>
+  const indexType Ouroboros<T, indexType, numSlots>::getBehindTailSlot() const {
+    return getPrevUnsigned(currentTail);
   }
 
   template<typename T, typename indexType, indexType numSlots>
@@ -103,15 +110,18 @@ namespace rtu {
 
   template<typename T, typename indexType, indexType numSlots>
   const bool Ouroboros<T, indexType, numSlots>::isValid(indexType index) const {
-    return ! errorFlag && ! isEmpty() && firstIsFresherThanSecond(index, currentTail);
+    return isFull() || firstIsFresherThanSecond(index, getPrevUnsigned(currentTail));
   }
 
   template<typename T, typename indexType, indexType numSlots>
   const bool Ouroboros<T, indexType, numSlots>::firstIsFresherThanSecond(indexType first, indexType second) const {
+    if (isEmpty()) {
+      return false;
+    }
     if (nextHead > second) {
-      return nextHead > first && second <= first;
+      return nextHead > first && second < first;
     } else {
-      return nextHead > first || second <= first;
+      return nextHead > first || second < first;
     }
   }
 
@@ -167,6 +177,9 @@ namespace rtu {
       }
       out << numeral;
     }
+    if ( ! isValid()) {
+      out << " (ERROR)";
+    }
     return out.str();
   }
 
@@ -206,8 +219,14 @@ namespace rtu {
       else { fullFlag = false; }
     }
     currentTail = getNext(currentTail);
+
     if (nextHead == currentTail) { emptyFlag = true; }
     return currentTail;
+  }
+
+  template<typename T, typename indexType, indexType numSlots>
+  const indexType Ouroboros<T, indexType, numSlots>::getPrevUnsigned(indexType index) const {
+    return index ? index - 1 : numSlots - 1;
   }
 
   template<typename T, typename indexType, indexType numSlots>
