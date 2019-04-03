@@ -21,50 +21,48 @@ if ( ! name) { name = RTU_MAKE_SUB_UPTR(tpc, fnc, inst); }
 #define RTU_STATIC_SSUB(name, tpc, fnc) static std::unique_ptr<rtu::topics::Subscription> name; \
 if ( ! name) { name = RTU_MAKE_SSUB_UPTR(tpc, fnc); }
 
-namespace rtu {
-  /**
-   * Topics, publishers, and subscriptions should really only be used as a last resort in most applications since they
-   * obscure the control flow of your program and can easily be misused out of laziness. Only choose to implement
-   * your behavior this way if there is no obviously clean way to communicate between two parts of your code. In other
-   * words, generally use this if your low coupling philosophy would be seriously offended otherwise.
-   * Some will argue that needing a technique like this is a symptom of bad design, and they may be right.
-   * But perfect design never makes it to production, and they may be wrong besides. Maybe a completely decoupled
-   * event-based/message-passing design approaches a sort of perfection in its simplicity and extensibility.
-   * So maybe disregard this whole message.
-   */
-  namespace topics {
+namespace rtu::topics {
+/**
+ * Topics, publishers, and subscriptions should really only be used as a last resort in most applications since they
+ * obscure the control flow of your program and can easily be misused out of laziness. Only choose to implement
+ * your behavior this way if there is no obviously clean way to communicate between two parts of your code. In other
+ * words, generally use this if your low coupling philosophy would be seriously offended otherwise.
+ * Some will argue that needing a technique like this is a symptom of bad design, and they may be right.
+ * But perfect design never makes it to production, and they may be wrong besides. Maybe a completely decoupled
+ * event-based/message-passing design approaches a sort of perfection in its simplicity and extensibility.
+ * So maybe disregard this whole message.
+ */
 
-    void publishPtr(const std::string &topic, void *data);
+  void publishPtr(const std::string &topic, void *data);
 
-    void publish(const std::string& topic);
+  void publish(const std::string& topic);
 
-    template <typename DataType>
-    void publish(const std::string& topic, const DataType&& data) {
-      publishPtr(topic, (void *) &data);
-    }
-
-    template <typename DataType>
-    void publish(const std::string& topic, const DataType& data) {
-      publishPtr(topic, (void *) &data);
-    }
-
-    typedef Delegate<void(void*)> Action;
-    typedef Delegate<void()> SimpleAction;
-
-    class Subscription {
-      public:
-        Subscription(const std::string &topic, const Action &action);
-        Subscription(const std::string &topic, const SimpleAction &simpleAction);
-        Subscription(const Subscription&) = delete; // no copies
-        Subscription& operator=(const Subscription&) = delete; // no self-assignments
-        Subscription(Subscription&&) = delete; // no moves
-        Subscription& operator=(Subscription&&) = delete; // no move assignments
-        virtual ~Subscription();
-      private:
-        std::string topic;
-        uint32_t id;
-        static std::atomic<uint32_t> nextId;
-    };
-
+  template <typename DataType>
+  void publish(const std::string& topic, const DataType&& data) {
+    publishPtr(topic, (void *) &data);
   }
+
+  template <typename DataType>
+  void publish(const std::string& topic, const DataType& data) {
+    publishPtr(topic, (void *) &data);
+  }
+
+  typedef Delegate<void(void*)> Action;
+  typedef Delegate<void()> SimpleAction;
+
+  class Subscription {
+    public:
+      Subscription(const std::string &topic, const Action &action);
+      Subscription(const std::string &topic, const SimpleAction &simpleAction);
+      Subscription(const Subscription&) = delete; // no copies
+      Subscription& operator=(const Subscription&) = delete; // no self-assignments
+      Subscription(Subscription&&) = delete; // no moves
+      Subscription& operator=(Subscription&&) = delete; // no move assignments
+      virtual ~Subscription();
+    private:
+      std::string topic;
+      uint32_t id;
+      static std::atomic<uint32_t> nextId;
+  };
+
 }
