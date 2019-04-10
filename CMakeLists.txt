@@ -11,6 +11,7 @@ add_library( realtimeutils STATIC
   eventResponseMap.cpp eventResponseMap.hpp
   keyInput.hpp
   ouroboros.hpp
+  stringHelpers.cpp stringHelpers.hpp
   topics.cpp topics.hpp
   )
 target_link_libraries( realtimeutils
