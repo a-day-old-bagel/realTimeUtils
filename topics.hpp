@@ -32,16 +32,16 @@ if ( ! name) { name = RTU_MAKE_SSUB_UPTR(tpc, fnc); }
 #define RTU_ARRAYSIZE(_ARR) ((int)(sizeof(_ARR)/sizeof(*_ARR))) // Size of static C-style array. Don't use on pointers!
 
 namespace rtu::topics {
-/**
- * Topics, publishers, and subscriptions should really only be used as a last resort in most applications since they
- * obscure the control flow of your program and can easily be misused out of laziness. Only choose to implement
- * your behavior this way if there is no obviously clean way to communicate between two parts of your code. In other
- * words, generally use this if your low coupling philosophy would be seriously offended otherwise.
- * Some will argue that needing a technique like this is a symptom of bad design, and they may be right.
- * But perfect design never makes it to production, and they may be wrong besides. Maybe a completely decoupled
- * event-based/message-passing design approaches a sort of perfection in its simplicity and extensibility.
- * So maybe disregard this whole message.
- */
+	/**
+	 * Topics, publishers, and subscriptions should really only be used as a last resort in most applications since they
+	 * obscure the control flow of your program and can easily be misused out of laziness. Only choose to implement
+	 * your behavior this way if there is no obviously clean way to communicate between two parts of your code. In other
+	 * words, generally use this if your low coupling philosophy would be seriously offended otherwise.
+	 * Some will argue that needing a technique like this is a symptom of bad design, and they may be right.
+	 * But perfect design never makes it to production, and they may be wrong besides. Maybe a completely decoupled
+	 * event-based/message-passing design approaches a sort of perfection in its simplicity and extensibility.
+	 * So maybe disregard this whole message.
+	 */
 
 	void publishf(const std::string &topic, const char *fmt, ...) RTU_FMTARGS(2);
 
@@ -76,5 +76,4 @@ namespace rtu::topics {
       uint32_t id;
       static std::atomic<uint32_t> nextId;
   };
-
 }
