@@ -1,6 +1,7 @@
 
 #include <unordered_map>
 #include <memory>
+#include <cstdarg>
 #include "topics.hpp"
 #include "stringHelpers.hpp"
 
