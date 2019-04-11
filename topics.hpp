@@ -76,4 +76,6 @@ namespace rtu::topics {
       uint32_t id;
       static std::atomic<uint32_t> nextId;
   };
+
+	typedef std::unique_ptr<Subscription> SubUptr;
 }
