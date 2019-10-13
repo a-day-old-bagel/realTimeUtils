@@ -14,23 +14,25 @@ namespace rtu {
       typedef rtu::Delegate<void(T&, const indexType&)> Dtor;
       static Ctor defaultCtor;
       static Dtor defaultDtor;
+      
       explicit Ouroboros(const Ctor & ctor = defaultCtor, const Dtor & dtor = defaultDtor);
-      const indexType getNumSlots() const;
-      const indexType getHeadSlot() const;
-      const indexType getTailSlot() const;
-      const indexType getBehindTailSlot() const;
-      const bool isEmpty() const;
-      const bool isFull() const;
-      const bool isValid() const;
-      const bool isValid(indexType index) const;
-      const bool firstIsFresherThanSecond(indexType first, indexType second) const;
-      const bool setEmptyIndex(indexType index);
+      
+      [[nodiscard]] indexType getNumSlots() const;
+      [[nodiscard]] indexType getHeadSlot() const;
+      [[nodiscard]] indexType getTailSlot() const;
+      [[nodiscard]] indexType getBehindTailSlot() const;
+      [[nodiscard]] bool isEmpty() const;
+      [[nodiscard]] bool isFull() const;
+      [[nodiscard]] bool isValid() const;
+		  [[nodiscard]] bool isValid(indexType index) const;
+		  [[nodiscard]] bool firstIsFresherThanSecond(indexType first, indexType second) const;
+      bool setEmptyIndex(indexType index);
       T & capitate();
       void decaudate();
       void decaudate(indexType upToButNot);
       T & operator [] (indexType index);
       const T & operator [] (indexType index) const;
-      const std::string toDebugString() const;
+		  [[nodiscard]] std::string toDebugString() const;
 
       static indexType getNext(indexType index);
       static indexType getPrev(indexType index);
@@ -50,7 +52,7 @@ namespace rtu {
       static void defaultDtorImpl(T&, const indexType&);
       indexType advanceHead();
       indexType advanceTail();
-      const indexType getPrevUnsigned(indexType index) const;
+		  [[nodiscard]] indexType getPrevUnsigned(indexType index) const;
       void haveBadTime();
   };
 
@@ -69,52 +71,52 @@ namespace rtu {
   template<typename T, typename indexType, indexType numSlots>
   typename Ouroboros<T, indexType, numSlots>::Dtor Ouroboros<T, indexType, numSlots>::defaultDtor =
       RTU_FUNC_DLGT(Ouroboros::defaultDtorImpl);
-
+  
   template<typename T, typename indexType, indexType numSlots>
   Ouroboros<T, indexType, numSlots>::Ouroboros(const Ctor &ctor, const Dtor &dtor) : ctor(ctor), dtor(dtor) {}
 
   template<typename T, typename indexType, indexType numSlots>
-  const indexType Ouroboros<T, indexType, numSlots>::getNumSlots() const {
+  indexType Ouroboros<T, indexType, numSlots>::getNumSlots() const {
     return numSlots;
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const indexType Ouroboros<T, indexType, numSlots>::getHeadSlot() const {
+  indexType Ouroboros<T, indexType, numSlots>::getHeadSlot() const {
     return getPrevUnsigned(nextHead);
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const indexType Ouroboros<T, indexType, numSlots>::getTailSlot() const {
+  indexType Ouroboros<T, indexType, numSlots>::getTailSlot() const {
     return currentTail;
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const indexType Ouroboros<T, indexType, numSlots>::getBehindTailSlot() const {
+  indexType Ouroboros<T, indexType, numSlots>::getBehindTailSlot() const {
     return getPrevUnsigned(currentTail);
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const bool Ouroboros<T, indexType, numSlots>::isEmpty() const {
+  bool Ouroboros<T, indexType, numSlots>::isEmpty() const {
     return emptyFlag;
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const bool Ouroboros<T, indexType, numSlots>::isFull() const {
+  bool Ouroboros<T, indexType, numSlots>::isFull() const {
     return fullFlag;
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const bool Ouroboros<T, indexType, numSlots>::isValid() const {
+  bool Ouroboros<T, indexType, numSlots>::isValid() const {
     return !errorFlag;
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const bool Ouroboros<T, indexType, numSlots>::isValid(indexType index) const {
+  bool Ouroboros<T, indexType, numSlots>::isValid(indexType index) const {
     return isFull() || firstIsFresherThanSecond(index, getPrevUnsigned(currentTail));
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const bool Ouroboros<T, indexType, numSlots>::firstIsFresherThanSecond(indexType first, indexType second) const {
+  bool Ouroboros<T, indexType, numSlots>::firstIsFresherThanSecond(indexType first, indexType second) const {
     if (isEmpty()) {
       return false;
     }
@@ -126,7 +128,7 @@ namespace rtu {
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const bool Ouroboros<T, indexType, numSlots>::setEmptyIndex(indexType index) {
+  bool Ouroboros<T, indexType, numSlots>::setEmptyIndex(indexType index) {
     if (isEmpty()) {
       nextHead = index;
       currentTail = index;
@@ -165,7 +167,7 @@ namespace rtu {
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const std::string Ouroboros<T, indexType, numSlots>::toDebugString() const {
+  std::string Ouroboros<T, indexType, numSlots>::toDebugString() const {
     std::stringstream out;
     for (indexType i = 0; i < numSlots; ++i) {
       int numeral = isValid(i);
@@ -225,7 +227,7 @@ namespace rtu {
   }
 
   template<typename T, typename indexType, indexType numSlots>
-  const indexType Ouroboros<T, indexType, numSlots>::getPrevUnsigned(indexType index) const {
+  indexType Ouroboros<T, indexType, numSlots>::getPrevUnsigned(indexType index) const {
     return index ? index - 1 : numSlots - 1;
   }
 
@@ -233,5 +235,5 @@ namespace rtu {
   void Ouroboros<T, indexType, numSlots>::haveBadTime() {
     // If you like exceptions, here is the place to throw one.
     errorFlag = true;
-  }
+  }  
 }
