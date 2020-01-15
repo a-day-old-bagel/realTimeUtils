@@ -18,4 +18,5 @@ target_link_libraries( realtimeutils
   )
 target_include_directories( realtimeutils PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/readerwriterqueue
   )
