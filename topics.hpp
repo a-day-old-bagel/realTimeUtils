@@ -3,6 +3,7 @@
 #include <string>
 #include <atomic>
 #include <memory>
+#include <functional>
 #include "delegate.hpp"
 
 // Get a std::unique_ptr to a closure-subscription without all the syntax
@@ -59,13 +60,17 @@ namespace rtu::topics {
 	  publishp(topic, (void *) &data);
   }
 
-  typedef Delegate<void(void*)> Action;
-  typedef Delegate<void()> SimpleAction;
+	typedef std::function<void(void*)> FAction;
+	typedef std::function<void()> FSimpleAction;
+  typedef Delegate<void(void*)> DAction;
+  typedef Delegate<void()> DSimpleAction;
 
   class Subscription {
     public:
-      Subscription(const std::string &topic, const Action &action);
-      Subscription(const std::string &topic, const SimpleAction &simpleAction);
+      Subscription(const std::string &topic, const DAction &dAction);
+      Subscription(const std::string &topic, const DSimpleAction &dSimpleAction);
+		  Subscription(const std::string &topic, const FAction &fAction);
+		  Subscription(const std::string &topic, const FSimpleAction &fSimpleAction);
       Subscription(const Subscription&) = delete; // no copies
       Subscription& operator=(const Subscription&) = delete; // no self-assignments
       Subscription(Subscription&&) = delete; // no moves

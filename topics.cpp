@@ -8,34 +8,51 @@
 namespace rtu::topics {
 
   namespace {
-    struct EitherAction {
-        bool isSimple;
-        union {
-            Action action;
-            SimpleAction simpleAction;
-        };
-        EitherAction() { } // DANGER
+    struct AnyAction {
+        bool isSimple, isDelegate;
+		    DAction dAction;
+		    DSimpleAction dSimpleAction;
+		    FAction fAction;
+		    FSimpleAction fSimpleAction;
     };
     struct Topic {
-      std::unordered_map<uint32_t, EitherAction> subscriptions;
+      std::unordered_map<uint32_t, AnyAction> subscriptions;
       void publish(void* data) {
-        for (auto sub : subscriptions) {
-          sub.second.isSimple ? sub.second.simpleAction() : sub.second.action(data);
+        for (const auto &sub : subscriptions) {
+        	if (sub.second.isDelegate) {
+		        sub.second.isSimple ? sub.second.dSimpleAction() : sub.second.dAction(data);
+        	} else {
+		        sub.second.isSimple ? sub.second.fSimpleAction() : sub.second.fAction(data);
+        	}
         }
       }
     };
     std::unordered_map<std::string, Topic> activeTopics;
   }
 
-  Subscription::Subscription(const std::string &topic, const Action &action) : topic(topic), id(++nextId) {
-    activeTopics[topic].subscriptions[id].action = action;
+  Subscription::Subscription(const std::string &topic, const DAction &dAction) : topic(topic), id(++nextId) {
+    activeTopics[topic].subscriptions[id].dAction = dAction;
     activeTopics[topic].subscriptions[id].isSimple = false;
+    activeTopics[topic].subscriptions[id].isDelegate = true;
   }
 
-  Subscription::Subscription(const std::string &topic, const SimpleAction &simpleAction) : topic(topic), id(++nextId){
-    activeTopics[topic].subscriptions[id].simpleAction = simpleAction;
+  Subscription::Subscription(const std::string &topic, const DSimpleAction &dSimpleAction) : topic(topic), id(++nextId){
+    activeTopics[topic].subscriptions[id].dSimpleAction = dSimpleAction;
     activeTopics[topic].subscriptions[id].isSimple = true;
+	  activeTopics[topic].subscriptions[id].isDelegate = true;
   }
+
+	Subscription::Subscription(const std::string &topic, const FAction &fAction) : topic(topic), id(++nextId) {
+		activeTopics[topic].subscriptions[id].fAction = fAction;
+		activeTopics[topic].subscriptions[id].isSimple = false;
+		activeTopics[topic].subscriptions[id].isDelegate = false;
+	}
+	
+	Subscription::Subscription(const std::string &topic, const FSimpleAction &fSimpleAction) : topic(topic), id(++nextId){
+		activeTopics[topic].subscriptions[id].fSimpleAction = fSimpleAction;
+		activeTopics[topic].subscriptions[id].isSimple = true;
+		activeTopics[topic].subscriptions[id].isDelegate = false;
+	}
 
   Subscription::~Subscription() {
     activeTopics[topic].subscriptions.erase(id);
