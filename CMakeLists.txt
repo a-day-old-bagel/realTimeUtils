@@ -1,11 +1,14 @@
 
-cmake_minimum_required( VERSION 3.6 FATAL_ERROR )
+cmake_minimum_required( VERSION 3.9.2 FATAL_ERROR )
+cmake_policy( VERSION 3.9.2...3.17 )
+
 set( CMAKE_DISABLE_IN_SOURCE_BUILD ON )
 set( CMAKE_DISABLE_SOURCE_CHANGES ON )
-project( realtimeutils VERSION 0.01.01.01 LANGUAGES CXX C )
 
-set( CMAKE_CXX_STANDARD 17 )
+set( CMAKE_CXX_STANDARD 20 )
 set( CMAKE_CXX_STANDARD_REQUIRED ON )
+
+project( realtimeutils VERSION 0.01.01.01 LANGUAGES CXX C )
 
 add_library( realtimeutils STATIC
   eventResponseMap.cpp eventResponseMap.hpp
